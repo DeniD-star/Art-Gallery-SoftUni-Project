@@ -6,6 +6,7 @@ const schema = new Schema({
     picture: { type: String, required: true, match: [/^https?/, 'Image must be a valid URL!'] },
     certificate: { type: String, required: true, enum: ['Yes', 'No']},
     author: { type: Schema.Types.ObjectId, ref: 'User' },
+    authorUsername: {type: String},
     usersShared: [{ type: Schema.Types.ObjectId, ref: 'User', default: [] }]
 
 })

@@ -9,8 +9,13 @@ async function createPublication(artData){
 
     return publication.save()
 }
+
+async function getPublicationById(id){
+    return Publication.findById(id).lean()
+}
 module.exports = {
     getAllArts,
-    createPublication
+    createPublication,
+    getPublicationById
    
 }
