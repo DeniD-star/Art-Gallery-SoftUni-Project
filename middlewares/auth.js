@@ -13,8 +13,8 @@ module.exports =()=> (req, res, next)=>{
         //attach functions to context
         if(parseToken(req, res)){
             req.auth = {
-                async register( username, password, address){
-                        const token = await register( username, password, address);
+                async register( username, address, password){
+                        const token = await register( username, address, password);
                         res.cookie(COOKIE_NAME, token);
                 },
                  async login(username, password){
@@ -36,7 +36,7 @@ module.exports =()=> (req, res, next)=>{
        
 }
 
-async function register(username, password, address){
+async function register(username, address, password){
     const existingUsername = await userService.getUserByUsername(username);
     
     if(existingUsername){
@@ -48,7 +48,7 @@ async function register(username, password, address){
     //1. we hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
     //i sega go suzdavame
-    const user = await userService.createUser(username, hashedPassword, address);
+    const user = await userService.createUser(username, address, hashedPassword);
 
     return generateToken(user);
 }
