@@ -100,4 +100,36 @@ router.post('/edit/:id', isUser(), async(req, res)=>{
     res.render('edit', ctx)
   }
 })
+
+router.get('/delete/:id', isUser(), async(req, res)=>{
+    try {
+        const publication = await req.storage.getPublicationById(req.params.id)
+        if(publication.author != req.user._id){
+            throw new Error('You can not delete a publication you have not created!')
+        }
+
+        await req.storage.deletePublication(req.params.id)
+        res.redirect('/arts/catalog');
+       
+    } catch (err) {
+        console.log(err.message);
+        res.redirect('/arts/404')
+    }
+})
+
+
+router.get('/share/:id', isUser(), async(req, res)=>{
+    try {
+        const publication = await req.storage.getPublicationById(req.params.id)
+        if(publication.author == req.user._id){
+            throw new Error('You can not share your own publication!')
+        }
+
+        await req.storage.sharePublication(req.params.id, req.user._id);
+        res.redirect('/arts/details/' + req.params.id)
+    } catch (err) {
+        console.log(err.message);
+        res.redirect('/arts/404')
+    }
+})
 module.exports = router;

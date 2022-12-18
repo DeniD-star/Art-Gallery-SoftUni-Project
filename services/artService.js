@@ -1,4 +1,5 @@
 const Publication = require('../models/Publication');
+const User = require('../models/User');
 
 
 async function getAllArts(){
@@ -25,10 +26,24 @@ async function editPublication(id, newData){
    
 
 }
+
+
+async function deletePublication(id){
+    return Publication.findByIdAndDelete(id);
+}
+async function sharePublication(publicationId, userId){
+    const publication = await Publication.findById(publicationId);
+    const user = await User.findById(userId);
+    publication.usersShared.push(user);
+
+    return publication.save()
+}
+
 module.exports = {
     getAllArts,
     createPublication,
     getPublicationById,
-    editPublication
-   
+    editPublication,
+    deletePublication,
+   sharePublication
 }
