@@ -68,4 +68,36 @@ router.get('/details/:id', async(req, res)=>{
 router.get('/404', (req, res)=>{
     res.render('404')
 })
+
+
+router.get('/edit/:id', isUser(), async(req, res)=>{
+    const publication = await req.storage.getPublicationById(req.params.id)
+    res.render('edit', {publication})
+})
+router.post('/edit/:id', isUser(), async(req, res)=>{
+  try {
+
+    const publication = await req.storage.getPublicationById(req.params.id)
+        if(publication.author != req.user._id){
+            throw new Error('You can not edit a publication you have not created!')
+        }
+       
+    await req.storage.editPublication(req.params.id, req.body)
+
+        res.redirect('/arts/details/' + req.params.id)
+  } catch (err) {
+    const ctx = {
+        errors: parseError(err),
+        publication: {
+            _id: req.params.id,
+            title: req.body.title,
+            paintingTec: req.body.paintingTec,
+            picture: req.body.picture,
+            certificate: req.body.certificate,
+           
+        }
+    }
+    res.render('edit', ctx)
+  }
+})
 module.exports = router;

@@ -13,9 +13,22 @@ async function createPublication(artData){
 async function getPublicationById(id){
     return Publication.findById(id).lean()
 }
+async function editPublication(id, newData){
+    const publication = await Publication.findById(id);
+
+    publication.title = newData.title;
+    publication.paintingTec = newData.paintingTec;
+    publication.picture = newData.picture;
+    publication.certificate = newData.certificate;
+    
+   return publication.save();
+   
+
+}
 module.exports = {
     getAllArts,
     createPublication,
-    getPublicationById
+    getPublicationById,
+    editPublication
    
 }
